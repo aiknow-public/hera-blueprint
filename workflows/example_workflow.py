@@ -1,6 +1,7 @@
-from hera.workflows import DAG, Workflow, WorkflowTemplate, script
+from hera.workflows import DAG, script
 
-name = "ExampleWorkflow"
+# will be used when Workflow / WorkflowTemplate is created
+name = "Example"
 
 
 @script()
@@ -22,18 +23,15 @@ def tails():
 
 
 def workflow_content():
+    """Returns the content of the desired workflow.
+
+    Out of this a WorkflowTemplate will be created for the deployment or a Workflow for debugging.
+
+    :rtype: object
+    """
     with DAG(name="d") as s:
         f = flip()
         heads().on_other_result(f, "heads")
         tails().on_other_result(f, "tails")
 
-
-# used for gitops deployment
-with WorkflowTemplate(name=name, entrypoint="d") as wt:
-    workflow_content()
-
-
-# used for debugging / development
-with Workflow(generate_name=name+"-", entrypoint="d", namespace="playground") as w:
-    workflow_content()
 
