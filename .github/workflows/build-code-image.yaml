@@ -94,20 +94,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          COSIGN_EXPERIMENTAL: "true"
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
-
   deploy-to-dev:
     needs: build
     permissions:
@@ -130,7 +116,7 @@ jobs:
       - name: execute py script
         run: python -m src.render_workflows
         env:
-          TASK_IMAGE: ghcr.io/aiknow-public/hera-blueprint:${{needs.build.outputs.digest}}
+          TASK_IMAGE: ghcr.io/aiknow-public/hera-blueprint:${GITHUB_SHA::7}
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Bump version
