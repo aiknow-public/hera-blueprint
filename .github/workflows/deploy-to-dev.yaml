@@ -30,6 +30,8 @@ jobs:
 
       - name: execute py script
         run: python render_workflows.py
+        env:
+          TASK_IMAGE: ghcr.io/aiknow-public/hera-blueprint:latest
           
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Bump version

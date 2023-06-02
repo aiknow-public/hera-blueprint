@@ -1,12 +1,12 @@
+import os
 from hera.workflows import DAG, script
 from hera.workflows.models import ImagePullPolicy
 
-# will be used when Workflow / WorkflowTemplate is created
 name = "Example"
-
+image = os.getenv("TASK_IMAGE")
 
 @script(
-    image="ghcr.io/aiknow-public/hera-blueprint:main",
+    image=image,
     image_pull_policy=ImagePullPolicy.always
 )
 def foo():

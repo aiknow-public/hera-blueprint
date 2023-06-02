@@ -1,10 +1,10 @@
 import os
 from hera.shared import global_config as global_config
 
-from src.workflows import example_workflow
+from workflows import example_workflow
 from hera.workflows import Workflow
 
-global_config.host = "https://"+os.getenv("ARGO_HOST")
+global_config.host = "https://"+os.getenv("ARGO_SERVER")
 token = os.getenv("ARGO_TOKEN").split()[1]
 global_config.token = token
 
