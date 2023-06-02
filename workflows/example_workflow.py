@@ -14,7 +14,7 @@ def flip():
 
 @script()
 def heads():
-    print("it was heads")
+    print("it was the heads")
 
 
 @script()
