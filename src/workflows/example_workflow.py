@@ -13,11 +13,12 @@ def flip():
     import random
     from art import art
 
-    result = "heads" if random.randint(0, 1) == 0 else "tails"
-    print(result)
-
+    # test external package
     art_1 = art("foo")
     print(art_1)
+
+    result = "heads" if random.randint(0, 1) == 0 else "tails"
+    print(result)
 
 
 @script()
