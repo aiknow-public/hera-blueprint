@@ -15,6 +15,7 @@ on:
     paths:
       - 'src/code/**'
       - 'src/workflows/**'
+      - '.github/workflows/build-code-image.yaml'
 #  pull_request:
 #    branches: [ "main" ]
 
