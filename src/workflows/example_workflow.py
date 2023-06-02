@@ -1,15 +1,23 @@
 from hera.workflows import DAG, script
+from hera.workflows.models import ImagePullPolicy
 
 # will be used when Workflow / WorkflowTemplate is created
 name = "Example"
 
 
-@script()
+@script(
+    image="ghcr.io/aiknow-public/hera-blueprint-base:main",
+    image_pull_policy=ImagePullPolicy.always
+)
 def flip():
     import random
+    from art import art
 
     result = "heads" if random.randint(0, 1) == 0 else "tails"
     print(result)
+
+    art_1 = art("foo")
+    print(art_1)
 
 
 @script()
