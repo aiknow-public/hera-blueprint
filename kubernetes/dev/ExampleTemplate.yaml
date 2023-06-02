@@ -22,7 +22,8 @@ spec:
     script:
       command:
       - python
-      image: python:3.8
+      image: ghcr.io/aiknow-public/hera-blueprint-base:main
+      imagePullPolicy: Always
       source: 'import os
 
         import sys
@@ -31,9 +32,15 @@ spec:
 
         import random
 
+        from art import art
+
         result = ''heads'' if random.randint(0, 1) == 0 else ''tails''
 
-        print(result)'
+        print(result)
+
+        art_1 = art(''foo'')
+
+        print(art_1)'
   - name: heads
     script:
       command:
