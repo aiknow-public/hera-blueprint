@@ -106,7 +106,6 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{needs.build.outputs.digest}}
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner
 
@@ -121,9 +120,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: execute py script
-        run: python src/render_workflows.py
+        run: python ./src/render_workflows.py
         env:
-          TASK_IMAGE: ghcr.io/aiknow-public/hera-blueprint:latest
+          TASK_IMAGE: ghcr.io/aiknow-public/hera-blueprint:${{needs.build.outputs.digest}}
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Bump version
