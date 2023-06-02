@@ -10,18 +10,10 @@ spec:
   templates:
   - dag:
       tasks:
-      - name: flip
-        template: flip
-      - depends: flip
-        name: heads
-        template: heads
-        when: '{{tasks.flip.outputs.result}} == heads'
-      - depends: flip
-        name: tails
-        template: tails
-        when: '{{tasks.flip.outputs.result}} == tails'
+      - name: foo
+        template: foo
     name: d
-  - name: flip
+  - name: foo
     script:
       command:
       - python
@@ -39,32 +31,4 @@ spec:
 
         art_1 = art(''foo'')
 
-        print(art_1)
-
-        result = ''heads'' if random.randint(0, 1) == 0 else ''tails''
-
-        print(result)'
-  - name: heads
-    script:
-      command:
-      - python
-      image: python:3.8
-      source: 'import os
-
-        import sys
-
-        sys.path.append(os.getcwd())
-
-        print(''it was the heads'')'
-  - name: tails
-    script:
-      command:
-      - python
-      image: python:3.8
-      source: 'import os
-
-        import sys
-
-        sys.path.append(os.getcwd())
-
-        print(''it was tails'')'
+        print(art_1)'
