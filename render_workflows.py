@@ -1,4 +1,4 @@
-from workflows import example_workflow
+from src.workflows import example_workflow
 from hera.workflows import WorkflowTemplate
 
 wt_list = []

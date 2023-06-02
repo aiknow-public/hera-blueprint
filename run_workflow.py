@@ -1,7 +1,7 @@
 import os
 from hera.shared import global_config as global_config
 
-from workflows import example_workflow
+from src.workflows import example_workflow
 from hera.workflows import Workflow
 
 global_config.host = "https://"+os.getenv("ARGO_HOST")
