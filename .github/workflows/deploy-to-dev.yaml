@@ -29,7 +29,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: execute py script
-        run: python render_workflows.py
+        run: python src/render_workflows.py
         env:
           TASK_IMAGE: ghcr.io/aiknow-public/hera-blueprint:latest
           
