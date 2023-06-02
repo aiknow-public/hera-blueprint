@@ -11,7 +11,7 @@ name = "Example"
 )
 def foo():
     from art import art
-    from tasks.some_tasks import do_something
+    from some_tasks import do_something
 
     # from own code
     do_something()
