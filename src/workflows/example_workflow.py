@@ -17,6 +17,7 @@ def foo():
     art_1 = art("foo")
     print(art_1)
 
+
 def workflow_content():
     """Returns the content of the desired workflow.
 

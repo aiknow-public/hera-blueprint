@@ -12,8 +12,10 @@ on:
     branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - 'src/base/**'
+#  pull_request:
+#    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
