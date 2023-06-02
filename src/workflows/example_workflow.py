@@ -6,12 +6,12 @@ name = "Example"
 
 
 @script(
-    image="ghcr.io/aiknow-public/hera-blueprint-base:main",
+    image="ghcr.io/aiknow-public/hera-blueprint:main",
     image_pull_policy=ImagePullPolicy.always
 )
 def foo():
     from art import art
-    from some_tasks import do_something
+    from tasks.some_tasks import do_something
 
     # from own code
     do_something()
