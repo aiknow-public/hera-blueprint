@@ -45,7 +45,7 @@ spec:
 
         sys.path.append(os.getcwd())
 
-        print(''it was heads'')'
+        print(''it was the heads'')'
   - name: tails
     script:
       command:
