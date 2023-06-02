@@ -115,7 +115,7 @@ jobs:
 
       - name: execute py script
         run: |
-          export TASK_IMAGE=ghcr.io/aiknow-public/hera-blueprint:${GITHUB_SHA::7}
+          export TASK_IMAGE=ghcr.io/aiknow-public/hera-blueprint:sha-${GITHUB_SHA::7}
           python -m src.render_workflows
 
       - uses: stefanzweifel/git-auto-commit-action@v4
