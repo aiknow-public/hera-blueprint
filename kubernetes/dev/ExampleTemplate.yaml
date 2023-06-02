@@ -25,9 +25,11 @@ spec:
 
         sys.path.append(os.getcwd())
 
-        import random
-
         from art import art
+
+        from some_tasks import do_something
+
+        do_something()
 
         art_1 = art(''foo'')
 
