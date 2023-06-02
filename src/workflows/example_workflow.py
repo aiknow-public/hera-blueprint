@@ -10,8 +10,11 @@ name = "Example"
     image_pull_policy=ImagePullPolicy.always
 )
 def foo():
-    import random
     from art import art
+    from some_tasks import do_something
+
+    # from own code
+    do_something()
 
     # test external package
     art_1 = art("foo")
