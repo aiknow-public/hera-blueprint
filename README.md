@@ -1,6 +1,6 @@
 # Hera Blueprint 
 
-...
+Blueprint for a Hera project incl. Gitops support (for flux)
 
 ## Folder structure
 ### [kubernetes](kubernetes)
