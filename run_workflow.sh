@@ -1,5 +1,5 @@
 # build and push image
-docker login --username=frank-bee --password=$GH_WRITE_PACKAGE ghcr.io
+docker login --username=$GH_WRITE_PACKAGE_USER --password=$GH_WRITE_PACKAGE ghcr.io
 docker buildx build --platform linux/amd64 -t ghcr.io/aiknow-public/hera-blueprint:$USER src/code
 docker push ghcr.io/aiknow-public/hera-blueprint:$USER
 
