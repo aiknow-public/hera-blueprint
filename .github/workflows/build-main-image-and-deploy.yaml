@@ -115,7 +115,7 @@ jobs:
         with:
           commit_message: Auto-deploy to dev (via gitops)
   deploy-to-qa:
-    needs: build
+    needs: deploy-to-dev
     environment: qa
     permissions:
       contents: write
