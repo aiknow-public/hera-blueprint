@@ -5,7 +5,7 @@ name: build main image and deploy
 # separate terms of service, privacy policy, and support
 # documentation.
 
-#see https://github.com/aiknow-public/hera-blueprint/new/main?filename=.github%2Fworkflows%2Fdocker-publish.yml&workflow_template=ci%2Fdocker-publish
+# see https://github.com/aiknow-public/hera-blueprint/new/main?filename=.github%2Fworkflows%2Fdocker-publish.yml&workflow_template=ci%2Fdocker-publish
 
 on:
   push:
