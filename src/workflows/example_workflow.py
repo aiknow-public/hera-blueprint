@@ -11,7 +11,7 @@ image = os.getenv("TASK_IMAGE")
 )
 def foo():
     from art import art
-    from some_tasks import do_something
+    from samplemodule import do_something
 
     # from own code
     do_something()

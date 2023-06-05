@@ -13,7 +13,8 @@ on:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
     paths:
-      - 'src/base/**'
+      - 'baseimage/**'
+      - '.github/workflows/build-base-image.yaml'
   pull_request:
     branches: [ "main" ]
 
@@ -22,7 +23,6 @@ env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}-base
-
 
 jobs:
   build:
@@ -67,7 +67,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
-          context: ./src/base
+          context: ./baseimage
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
