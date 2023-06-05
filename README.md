@@ -25,8 +25,8 @@ changes in the [kubernetes](kubernetes) folder. As well, the k8s cluster(s) shou
 Contains the rendered workflow files, deployed via gitops.
 
 - [src/main](src/main)  
-Contains the package(s) with the actual code (business logic).  
-There is a pipeline which automatically builds a docker container out of it.
+Contains the package(s) with the actual code (business logic) and the third-party requirements.  
+There is a pipeline which automatically builds a docker image out of it.
 
 - [src/workflows](src/workflows)  
 Contains the workflow code (DAGs or Steps).  
@@ -36,7 +36,7 @@ by [run _workflow.py](src/run_workflow.py) and [render_workflows.py](src/render_
 ## Scripts
 - [render_workflows.py](./src/render_workflows.py)  
 Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gitops.  
-(Called by github action) 
+(Triggered by github workflow) 
 
 - [run_workflow.sh](./run_workflow.sh)  
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
