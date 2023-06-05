@@ -1,6 +1,8 @@
 # Hera Blueprint 
+[![build base image](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-base-image.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-base-image.yaml)
+[![build main image and deploy to dev](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)
 
-Blueprint for a Hera project incl. Gitops support (for flux)
+Blueprint for a Hera project incl. gitops support.
 
 ## Folder structure
 ### [kubernetes](kubernetes)
