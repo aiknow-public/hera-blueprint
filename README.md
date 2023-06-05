@@ -2,8 +2,8 @@
 [![build base image](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-base-image.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-base-image.yaml)
 [![build main image and deploy to dev](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)
 
-Blueprint for a Hera project incl. gitops support.
-[Use this as template](https://github.com/aiknow-public/hera-blueprint/generate)
+Blueprint for a Hera project incl. gitops support. 
+You can [use this as template](https://github.com/aiknow-public/hera-blueprint/generate) for your hera project.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aiknow-public/hera-blueprint)
 
