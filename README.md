@@ -4,6 +4,14 @@
 
 Blueprint for a Hera project incl. gitops support.
 
+## Getting started
+
+### TL;DR
+1) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aiknow-public/hera-blueprint)
+2) Copy the environmental variables from https://argowf.ai-know-dev.com/userinfo (Button "COPY TO CLIPBOARD")
+3) Paste them into the terminal in your codespace
+4) Run `./run_workflow.sh example_workflow.py`
+
 ## Folder structure
 - [baseimage](baseimage)  
 Contains the third party packages.  
