@@ -6,18 +6,18 @@ Blueprint for a Hera project incl. gitops support.
 
 ## Folder structure
 - [baseimage](baseimage)
-  Contains the third party packages.
-  There is a pipeline which automatically builds a docker container out of it.
+Contains the third party packages.  
+There is a pipeline which automatically builds a docker container out of it.
 
 - [kubernetes](kubernetes)
-Contains the rendered workflow files, deployed via Gitops 
+Contains the rendered workflow files, deployed via gitops.
 
 - [src/main](src/main)
-  Contains the package(s) with the actual code (business logic).
-  There is a pipeline which automatically builds a docker container out of it.
+Contains the package(s) with the actual code (business logic).  
+There is a pipeline which automatically builds a docker container out of it.
 
 - [src/workflows](src/workflows)
-Contains the workflow code (DAGs or Steps). / 
+Contains the workflow code (DAGs or Steps).  
 The actual workflows / workflow templates are created
 by [run _workflow.py](src/run_workflow.py) and [render_workflows.py](src/render_workflows.py).
 
