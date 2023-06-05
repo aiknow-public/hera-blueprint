@@ -17,7 +17,7 @@ spec:
     script:
       command:
       - python
-      image: ghcr.io/aiknow-public/hera-blueprint:sha-4acd96b
+      image: ghcr.io/aiknow-public/hera-blueprint:sha-8c815eb
       imagePullPolicy: Always
       source: 'import os
 
