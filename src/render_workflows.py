@@ -4,7 +4,7 @@ from hera.workflows import WorkflowTemplate
 wt_list = []
 
 # instantiate example WorkflowTemplate
-with WorkflowTemplate(name=example_workflow.name, entrypoint="d", image_pull_secrets="gh-registry", service_account_name="argo-workflow") as w1:
+with WorkflowTemplate(name=example_workflow.name, entrypoint="d", service_account_name="argo-workflow") as w1:
     example_workflow.workflow_content()
 wt_list.append(w1)
 
