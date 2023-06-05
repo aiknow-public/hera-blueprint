@@ -10,10 +10,11 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 ## Getting started
 
 ### TL;DR
-1) [Open in GitHub Codespaces](https://codespaces.new/aiknow-public/hera-blueprint)
-2) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
-3) Paste them into the terminal in your codespace
-4) Run `./run_workflow.sh example_workflow.py`
+1) Create a repository using this repo here as a template
+2) Open it in GitHub Codespaces
+3) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
+4) Paste them into the terminal in your codespace
+5) Run `./run_workflow.sh example_workflow.py`
 
 ## Folder structure
 - [baseimage](baseimage)  
