@@ -13,8 +13,7 @@ on:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
     paths:
-      - 'src/main/**'
-      - 'src/workflows/**'
+      - 'src/**'
       - '.github/workflows/build-main-image-and-deploy-to-dev.yaml'
   pull_request:
     branches: [ "main" ]
