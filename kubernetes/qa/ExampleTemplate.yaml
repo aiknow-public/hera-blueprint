@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: Example
+spec:
+  entrypoint: d
+  imagePullSecrets:
+  - name: gh-registry
+  serviceAccountName: argo-workflow
+  templates:
+  - dag:
+      tasks:
+      - name: foo
+        template: foo
+    name: d
+  - name: foo
+    script:
+      command:
+      - python
+      image: ghcr.io/aiknow-public/hera-blueprint:sha-c08b6ae
+      imagePullPolicy: Always
+      source: 'import os
+
+        import sys
+
+        sys.path.append(os.getcwd())
+
+        from art import art
+
+        from samplemodule import do_something
+
+        do_something()
+
+        art_1 = art(''foo'')
+
+        print(art_1)'
