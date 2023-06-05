@@ -4,8 +4,6 @@ metadata:
   name: Example
 spec:
   entrypoint: d
-  imagePullSecrets:
-  - name: gh-registry
   serviceAccountName: argo-workflow
   templates:
   - dag:
@@ -17,7 +15,7 @@ spec:
     script:
       command:
       - python
-      image: ghcr.io/aiknow-public/hera-blueprint:sha-a7a588a
+      image: ghcr.io/aiknow-public/hera-blueprint:sha-2de11c6
       imagePullPolicy: Always
       source: 'import os
 
