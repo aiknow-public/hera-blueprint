@@ -14,7 +14,7 @@ on:
     tags: [ 'v*.*.*' ]
     paths:
       - 'src/**'
-      - '.github/workflows/build-main-image-and-deploy-to-dev.yaml'
+      - '.github/workflows/build-main-image-and-deploy.yaml'
   pull_request:
     branches: [ "main" ]
 
@@ -113,3 +113,16 @@ jobs:
         name: Bump version
         with:
           commit_message: Auto-deploy to dev (via gitops)
+  deploy-to-qa:
+    needs: build
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: install python packages
+        run: |
+          cp kubernetes/dev/*.yaml kubernetes/qa
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        name: Bump version
+        with:
+          commit_message: Auto-deploy to qa (via gitops)
