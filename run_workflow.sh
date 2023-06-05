@@ -20,3 +20,7 @@ docker push ghcr.io/aiknow-public/hera-blueprint:$USER
 # run workflow
 export TASK_IMAGE="ghcr.io/aiknow-public/hera-blueprint:$USER"
 python "./src/$1"
+
+echo Wait for workflow to complete...
+argo wait @latest -n playground
+argo logs @latest -n playground
