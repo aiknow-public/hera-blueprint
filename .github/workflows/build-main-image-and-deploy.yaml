@@ -86,6 +86,7 @@ jobs:
 
   deploy-to-dev:
     needs: build
+    environment: dev
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -115,11 +116,14 @@ jobs:
           commit_message: Auto-deploy to dev (via gitops)
   deploy-to-qa:
     needs: build
+    environment: qa
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: install python packages
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner
+      - name: copy yamls to qa
         run: |
           cp kubernetes/dev/*.yaml kubernetes/qa
       - uses: stefanzweifel/git-auto-commit-action@v4
