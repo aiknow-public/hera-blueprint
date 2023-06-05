@@ -16,6 +16,12 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 4) Paste them into the terminal in your codespace
 5) Run `./run_workflow.sh example_workflow.py`
 
+### Prerequisites
+- To be able to push a docker image with the [run_workflow.sh](./run_workflow.sh) script, access to
+this repository's github container registry is required ("package write").
+To allow this, set the environmental variables `GH_WRITE_PACKAGE_USER` and `GH_WRITE_PACKAGE` (ideally via Codespaces secret)
+- For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for 
+changes in the [kubernetes](kubernetes) folder. As well, the k8s cluster(s) should have read access to this repository's github container registry. 
 ## Folder structure
 - [baseimage](baseimage)  
 Contains the third party packages.  
