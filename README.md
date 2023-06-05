@@ -22,6 +22,7 @@ this repository's github container registry is required ("package write").
 To allow this, set the environmental variables `GH_WRITE_PACKAGE_USER` and `GH_WRITE_PACKAGE` (ideally via Codespaces secret)
 - For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for 
 changes in the [kubernetes](kubernetes) folder. As well, the k8s cluster(s) should have read access to this repository's github container registry. 
+
 ## Folder structure
 - [baseimage](baseimage)  
 Contains the third party packages.  
