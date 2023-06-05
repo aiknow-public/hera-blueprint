@@ -12,5 +12,5 @@
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip3 install -r baseimage/requirements.txt"
+	"postCreateCommand": "pip3 install -r src/main/requirements.txt"
 }

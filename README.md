@@ -1,5 +1,4 @@
 # Hera Blueprint 
-[![build base image](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-base-image.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-base-image.yaml)
 [![build main image and deploy to dev](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)
 
 Blueprint for a Hera project incl. gitops support. 
@@ -22,10 +21,6 @@ To allow this, set the environmental variables `GH_WRITE_PACKAGE_USER` and `GH_W
 changes in the [kubernetes](kubernetes) folder. As well, the k8s cluster(s) should have read access to this repository's github container registry. 
 
 ## Folder structure
-- [baseimage](baseimage)  
-Contains the third party packages.  
-There is a pipeline which automatically builds a docker container out of it.
-
 - [kubernetes](kubernetes)  
 Contains the rendered workflow files, deployed via gitops.
 
@@ -37,8 +32,6 @@ There is a pipeline which automatically builds a docker container out of it.
 Contains the workflow code (DAGs or Steps).  
 The actual workflows / workflow templates are created
 by [run _workflow.py](src/run_workflow.py) and [render_workflows.py](src/render_workflows.py).
-
-
 
 ## Scripts
 - [render_workflows.py](./src/render_workflows.py)  
