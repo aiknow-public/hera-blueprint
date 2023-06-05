@@ -5,8 +5,6 @@
 Blueprint for a Hera project incl. gitops support. 
 You can [use this repo as template](https://github.com/aiknow-public/hera-blueprint/generate) for your hera project.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aiknow-public/hera-blueprint)
-
 ## Getting started
 
 ### TL;DR

@@ -18,6 +18,8 @@ if [ "$2" == "-m" ]; then
   measurement_enabled=true
 fi
 
+export TASK_IMAGE="ghcr.io/$GITHUB_REPOSITORY:$USER"
+
 # Function to start the execution timer
 start_timer() {
   timer_start=$(date +%s.%N)
@@ -36,13 +38,12 @@ stop_timer() {
 # build and push image
 start_timer
 docker login --username=$GH_WRITE_PACKAGE_USER --password=$GH_WRITE_PACKAGE ghcr.io
-docker buildx build --platform linux/amd64 -t ghcr.io/aiknow-public/hera-blueprint:$USER src/main
-docker push ghcr.io/aiknow-public/hera-blueprint:$USER
+docker buildx build --platform linux/amd64 -t $TASK_IMAGE src/main
+docker push $TASK_IMAGE
 stop_timer "Docker build and push"
 
 # run workflow
 start_timer
-export TASK_IMAGE="ghcr.io/aiknow-public/hera-blueprint:$USER"
 python "./src/$1"
 echo Wait for workflow to complete...
 argo wait @latest -n playground
