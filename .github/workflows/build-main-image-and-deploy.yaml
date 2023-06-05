@@ -110,7 +110,7 @@ jobs:
 
       - name: execute py script
         run: |
-          export TASK_IMAGE=ghcr.io/aiknow-public/hera-blueprint:sha-${GITHUB_SHA::7}
+          export TASK_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7}
           cd src
           python render_workflows.py
 
