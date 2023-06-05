@@ -39,5 +39,5 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 (Called by github action) 
 
 - [run_workflow.sh](./run_workflow.sh)  
-Script to run a workflow for debuggin, it can be started locally or via codespaces. 
+Script to run a workflow for debugging, it can be started locally or via codespaces. 
 Make sure to set the required environment variables.
