@@ -1,2 +1,2 @@
 def do_something():
-    print("bar7")
+    print("bar8")
