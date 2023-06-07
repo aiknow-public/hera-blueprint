@@ -1,4 +1,4 @@
-name: build main image and deploy
+name: build
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -88,6 +88,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy-to-dev:
+    if: github.event_name != 'pull_request'
     needs: build
     environment: dev
     permissions:
@@ -117,7 +118,9 @@ jobs:
         name: Bump version
         with:
           commit_message: Auto-deploy to dev (via gitops)
+
   deploy-to-qa:
+    if: github.event_name != 'pull_request'
     needs: deploy-to-dev
     environment: qa
     permissions:

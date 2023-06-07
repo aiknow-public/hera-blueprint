@@ -162,7 +162,7 @@ stop_timer "Docker build and push"
 
 # run workflow
 start_timer
-python "./src/$1"
+python "./src/$filename"
 echo Wait for workflow to complete...
 argo wait @latest -n playground
 stop_timer "Workflow execution"
