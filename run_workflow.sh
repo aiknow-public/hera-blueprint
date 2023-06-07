@@ -18,6 +18,7 @@ if [ "$2" == "-m" ]; then
   measurement_enabled=true
 fi
 
+
 export TASK_IMAGE="ghcr.io/$GITHUB_REPOSITORY:$USER"
 
 # Function to start the execution timer
