@@ -4,12 +4,12 @@
 display_help() {
   echo "Usage: ./script.sh [OPTIONS] FILENAME"
   echo "Options:"
-  echo "  -p, --pr PR_NUMBER             Specify the pull request number"
-  echo "  -u, --user GITHUB_USER         Specify the GitHub username"
-  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository"
-  echo "  -d, --docker-user DOCKER_USER  Specify the Docker username"
+  echo "  -p, --pr PR_NUMBER             Specify the pull request number (required if not using codespaces, needed for the creation on an ephemeral branch"
+  echo "  -u, --user GITHUB_USER         Specify the GitHub username (required if not using codespaces to query for PRs)"
+  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository (required if not using codespaces, needed for the creation on an ephemeral branch)"
+  echo "  -d, --docker-user DOCKER_USER  Specify the Docker username (required if not using codespaces, needed for the creation on an ephemeral branch)"
   echo "  -w, --docker-password DOCKER_PASSWORD"
-  echo "                                 Specify the Docker user password"
+  echo "                                 Specify the Docker user password (required if not using codespaces, needed for the creation on an ephemeral branch)"
   echo "  -m, --measure                  Enable measurement"
   echo "  -h, --help                     Display this help message"
 }
@@ -136,7 +136,7 @@ if [ "$measurement_enabled" = true ]; then
   echo "Measurement enabled."
 fi
 
-export TASK_IMAGE="ghcr.io/$GITHUB_REPOSITORY:pr-$pr"
+export TASK_IMAGE="ghcr.io/$repository:pr-$pr"
 
 # Function to start the execution timer
 start_timer() {

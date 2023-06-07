@@ -8,10 +8,12 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 
 ### TL;DR
 1) Create a repository using this repo here as a template
-2) Open it in GitHub Codespaces
-3) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
-4) Paste them into the terminal in your codespace
-5) Run `./run_workflow.sh example_workflow.py`
+1) Open it in GitHub Codespaces
+1) Create a branch, do some change in the python code an create a PR
+1) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
+1) Paste them into the terminal in your codespace
+1) Run `./run_workflow.sh example_workflow.py`  
+--> An ephemeral docker image will be created and a workflow will be started using it. The output of the workflow with be written to the terminal.
 
 ### Prerequisites
 - To be able to push a docker image with the [run_workflow.sh](./run_workflow.sh) script, access to
@@ -40,4 +42,4 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 
 - [run_workflow.sh](./run_workflow.sh)  
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
-Make sure to set the required environment variables.
+Make sure to set the required environment variables, `--help` for more info.
