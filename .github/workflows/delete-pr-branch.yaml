@@ -33,4 +33,4 @@ jobs:
 
       - name: Delete Docker Image
         run: |
-          docker rmi ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.pull_request.number }}
+          docker rmi ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.pull_request.number }} || echo "Image does not exist."
