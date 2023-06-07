@@ -1,28 +1,36 @@
-name: Delete Branch on Pull Request Close
+name: Delete Docker Image on Pull Request Close
 on:
   pull_request:
     types:
       - closed
 
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+
 jobs:
-  delete_branch:
+  delete_image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Check branch existence
-        id: branch_check
-        run: |
-          branch_name="pr-$PR_NUMBER"
-          if git rev-parse --quiet --verify "$branch_name" >/dev/null; then
-            echo "::set-output name=branch_exists::true"
-          else
-            echo "::set-output name=branch_exists::false"
-          fi
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}  
 
-      - name: Delete branch
-        if: steps.branch_check.outputs.branch_exists == 'true'
+      - name: Delete Docker Image
         run: |
-          branch_name="pr-$PR_NUMBER"
-          git push origin --delete "$branch_name"
+          docker rmi ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.pull_request.number }}
