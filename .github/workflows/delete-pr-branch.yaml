@@ -1,0 +1,28 @@
+name: Delete Branch on Pull Request Close
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  delete_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Check branch existence
+        id: branch_check
+        run: |
+          branch_name="pr-$PR_NUMBER"
+          if git rev-parse --quiet --verify "$branch_name" >/dev/null; then
+            echo "::set-output name=branch_exists::true"
+          else
+            echo "::set-output name=branch_exists::false"
+          fi
+
+      - name: Delete branch
+        if: steps.branch_check.outputs.branch_exists == 'true'
+        run: |
+          branch_name="pr-$PR_NUMBER"
+          git push origin --delete "$branch_name"
