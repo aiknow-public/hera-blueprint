@@ -20,7 +20,7 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 this repository's github container registry is required ("package write").
 To allow this, set the environmental variables `DOCKER_REGISTRY`,`DOCKER_USER` and `DOCKER_PASSWORD` (ideally via Codespaces secret)
 - For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for 
-changes in the [kubernetes](kubernetes) folder. As well, the k8s cluster(s) should have read access to this repository's github container registry. 
+changes in the [kubernetes](kubernetes) folder. As well, the k8s cluster(s) should have read access to this repository's container registry. 
 
 ## Folder structure
 - [kubernetes](kubernetes)  
