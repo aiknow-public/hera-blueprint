@@ -7,11 +7,18 @@ display_help() {
   echo "  -p, --pr PR_NUMBER             Specify the pull request number (required if not using codespaces, needed for the creation on an ephemeral branch"
   echo "  -u, --user GITHUB_USER         Specify the GitHub username (required if not using codespaces to query for PRs)"
   echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository (required if not using codespaces, needed for the creation on an ephemeral branch)"
-  echo "  -d, --docker-user DOCKER_USER  Specify the Docker username (required if not using codespaces, needed for the creation on an ephemeral branch)"
-  echo "  -w, --docker-password DOCKER_PASSWORD"
+  echo "  -dr, --docker-registry DOCKER_REGISTRY"
+  echo "                                 Specify the Docker registry (required if not using codespaces, needed for the creation on an ephemeral branch)"
+  echo "  -du, --docker-user DOCKER_USER  Specify the Docker username (required if not using codespaces, needed for the creation on an ephemeral branch)"
+  echo "  -dp, --docker-password DOCKER_PASSWORD"
   echo "                                 Specify the Docker user password (required if not using codespaces, needed for the creation on an ephemeral branch)"
   echo "  -m, --measure                  Enable measurement"
   echo "  -h, --help                     Display this help message"
+}
+
+# Function to check if a command-line tool is installed
+check_tool_installed() {
+  command -v "$1" >/dev/null 2>&1 || { echo >&2 "Error: $1 is required but not installed. Aborting."; exit 1; }
 }
 
 # Function to check if the Python script exists
@@ -24,14 +31,21 @@ check_python_script() {
 
 # Function to get the pull request number created by the user
 get_pull_request() {
+  # Check if the required tools are installed
+  check_tool_installed "gh"
+  check_tool_installed "jq"
   pr=$(gh pr list --base "main" --author "$user" --json number --state all --limit 1 | jq -r '.[].number')
 }
+
+# Check if the required tools are installed
+check_tool_installed "argo"
 
 # Set default values
 pr=""
 measurement_enabled=false
 user=""
 repository=""
+docker_registry=""
 docker_user=""
 docker_user_password=""
 
@@ -50,11 +64,15 @@ while [[ $# -gt 0 ]]; do
       repository="$2"
       shift 2
       ;;
-    -d|--docker-user)
+    -dr|--docker-registry)
+      docker_registry="$2"
+      shift 2
+      ;;
+    -du|--docker-user)
       docker_user="$2"
       shift 2
       ;;
-    -w|--docker-password)
+    -dp|--docker-password)
       docker_user_password="$2"
       shift 2
       ;;
@@ -102,10 +120,20 @@ if [ -z "$repository" ]; then
   fi
 fi
 
+# Set the 'docker_registry' variable if not provided
+if [ -z "$docker_registry" ]; then
+  if [ -n "$DOCKER_REGISTRY" ]; then
+    docker_registry=$DOCKER_REGISTRY
+  else
+    echo "Docker registry not provided."
+    exit 1
+  fi
+fi
+
 # Set the 'docker_user' variable if not provided
 if [ -z "$docker_user" ]; then
-  if [ -n "$GH_WRITE_PACKAGE_USER" ]; then
-    docker_user=$GH_WRITE_PACKAGE_USER
+  if [ -n "$DOCKER_USER" ]; then
+    docker_user=$DOCKER_USER
   else
     echo "Docker username not provided."
     exit 1
@@ -114,8 +142,8 @@ fi
 
 # Set the 'docker_user_password' variable if not provided
 if [ -z "$docker_user_password" ]; then
-  if [ -n "$GH_WRITE_PACKAGE" ]; then
-    docker_user_password=$GH_WRITE_PACKAGE
+  if [ -n "$DOCKER_PASSWORD" ]; then
+    docker_user_password=$DOCKER_PASSWORD
   else
     echo "Docker user password not provided."
     exit 1
@@ -136,7 +164,7 @@ if [ "$measurement_enabled" = true ]; then
   echo "Measurement enabled."
 fi
 
-export TASK_IMAGE="ghcr.io/$repository:pr-$pr"
+export TASK_IMAGE="$docker_registry/$repository:pr-$pr"
 
 # Function to start the execution timer
 start_timer() {
@@ -155,15 +183,15 @@ stop_timer() {
 
 # build and push image
 start_timer
-docker login --username=$docker_user --password=$docker_user_password ghcr.io
-docker buildx build --platform linux/amd64 -t $TASK_IMAGE src/main
-docker push $TASK_IMAGE
+docker login --username="$docker_user" --password="$docker_user_password" "$docker_registry"
+docker buildx build --platform linux/amd64 -t "$TASK_IMAGE" src/main
+docker push "$TASK_IMAGE"
 stop_timer "Docker build and push"
 
 # run workflow
 start_timer
 python "./src/$filename"
-echo Wait for workflow to complete...
+echo "Wait for workflow to complete..."
 argo wait @latest -n playground
 stop_timer "Workflow execution"
 
