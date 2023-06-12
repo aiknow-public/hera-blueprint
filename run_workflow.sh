@@ -4,14 +4,23 @@
 display_help() {
   echo "Usage: ./script.sh [OPTIONS] FILENAME"
   echo "Options:"
-  echo "  -p, --pr PR_NUMBER             Specify the pull request number (required if not using codespaces, needed for the creation on an ephemeral branch"
-  echo "  -u, --user GITHUB_USER         Specify the GitHub username (required if not using codespaces to query for PRs)"
-  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository (required if not using codespaces, needed for the creation on an ephemeral branch)"
-  echo "  -d, --docker-user DOCKER_USER  Specify the Docker username (required if not using codespaces, needed for the creation on an ephemeral branch)"
-  echo "  -w, --docker-password DOCKER_PASSWORD"
-  echo "                                 Specify the Docker user password (required if not using codespaces, needed for the creation on an ephemeral branch)"
   echo "  -m, --measure                  Enable measurement"
   echo "  -h, --help                     Display this help message"
+  echo ""
+  echo "The following options are only needed if not working with codespaces but e.g. from local laptop:"
+  echo "  -p, --pr PR_NUMBER             Specify the pull request number"
+  echo "  -u, --user GITHUB_USER         Specify the GitHub username (required to query for PRs)"
+  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository (including org if github registry is used)"
+  echo "  -dr, --docker-registry DOCKER_REGISTRY"
+  echo "                                 Specify the Docker registry"
+  echo "  -du, --docker-user DOCKER_USER Specify the Docker username"
+  echo "  -dp, --docker-password DOCKER_PASSWORD"
+  echo "                                 Specify the Docker user password"
+}
+
+# Function to check if a command-line tool is installed
+check_tool_installed() {
+  command -v "$1" >/dev/null 2>&1 || { echo >&2 "Error: $1 is required but not installed. Aborting."; exit 1; }
 }
 
 # Function to check if the Python script exists
@@ -24,14 +33,32 @@ check_python_script() {
 
 # Function to get the pull request number created by the user
 get_pull_request() {
+  # Check if the required tools are installed
+  check_tool_installed "gh"
+  check_tool_installed "jq"
+
+  # Set the 'user' variable if not provided
+  if [ -z "$user" ]; then
+    if [ -n "$GITHUB_USER" ]; then
+      user=$GITHUB_USER
+    else
+      echo "GitHub username not provided."
+      exit 1
+    fi
+  fi
+
   pr=$(gh pr list --base "main" --author "$user" --json number --state all --limit 1 | jq -r '.[].number')
 }
+
+# Check if the required tools are installed
+check_tool_installed "argo"
 
 # Set default values
 pr=""
 measurement_enabled=false
 user=""
 repository=""
+docker_registry=""
 docker_user=""
 docker_user_password=""
 
@@ -50,11 +77,15 @@ while [[ $# -gt 0 ]]; do
       repository="$2"
       shift 2
       ;;
-    -d|--docker-user)
+    -dr|--docker-registry)
+      docker_registry="$2"
+      shift 2
+      ;;
+    -du|--docker-user)
       docker_user="$2"
       shift 2
       ;;
-    -w|--docker-password)
+    -dp|--docker-password)
       docker_user_password="$2"
       shift 2
       ;;
@@ -82,12 +113,18 @@ fi
 # Check if the Python script exists
 check_python_script "$filename"
 
-# Set the 'user' variable if not provided
-if [ -z "$user" ]; then
-  if [ -n "$GITHUB_USER" ]; then
-    user=$GITHUB_USER
+# Check if ARGO_SERVER environment variable is set
+if [[ -z "$ARGO_SERVER" ]]; then
+  echo "ERROR: ARGO_SERVER environment variable is not set."
+  exit 1
+fi
+
+# Set the 'docker_registry' variable if not provided
+if [ -z "$docker_registry" ]; then
+  if [ -n "$DOCKER_REGISTRY" ]; then
+    docker_registry=$DOCKER_REGISTRY
   else
-    echo "GitHub username not provided."
+    echo "Docker registry not provided."
     exit 1
   fi
 fi
@@ -98,26 +135,6 @@ if [ -z "$repository" ]; then
     repository=$GITHUB_REPOSITORY
   else
     echo "GitHub repository not provided."
-    exit 1
-  fi
-fi
-
-# Set the 'docker_user' variable if not provided
-if [ -z "$docker_user" ]; then
-  if [ -n "$GH_WRITE_PACKAGE_USER" ]; then
-    docker_user=$GH_WRITE_PACKAGE_USER
-  else
-    echo "Docker username not provided."
-    exit 1
-  fi
-fi
-
-# Set the 'docker_user_password' variable if not provided
-if [ -z "$docker_user_password" ]; then
-  if [ -n "$GH_WRITE_PACKAGE" ]; then
-    docker_user_password=$GH_WRITE_PACKAGE
-  else
-    echo "Docker user password not provided."
     exit 1
   fi
 fi
@@ -136,7 +153,7 @@ if [ "$measurement_enabled" = true ]; then
   echo "Measurement enabled."
 fi
 
-export TASK_IMAGE="ghcr.io/$repository:pr-$pr"
+export TASK_IMAGE="$docker_registry/$repository:pr-$pr"
 
 # Function to start the execution timer
 start_timer() {
@@ -153,17 +170,52 @@ stop_timer() {
   fi
 }
 
+######
 # build and push image
+######
 start_timer
-docker login --username=$docker_user --password=$docker_user_password ghcr.io
-docker buildx build --platform linux/amd64 -t $TASK_IMAGE src/main
-docker push $TASK_IMAGE
+# Check if the user is already logged in to the Docker registry
+if ! docker info --format '{{.RegistryConfig.IndexConfigs}}' | grep -q "$docker_registry"; then
+  # Set the 'docker_user' variable if not provided
+  if [ -z "$docker_user" ]; then
+    if [ -n "$DOCKER_USER" ]; then
+      docker_user=$DOCKER_USER
+    else
+      echo "Docker username not provided."
+      exit 1
+    fi
+  fi
+
+  # Set the 'docker_user_password' variable if not provided
+  if [ -z "$docker_user_password" ]; then
+    if [ -n "$DOCKER_PASSWORD" ]; then
+      docker_user_password=$DOCKER_PASSWORD
+    else
+      echo "Docker user password not provided."
+      exit 1
+    fi
+  fi
+
+  docker login --username="$docker_user" --password="$docker_user_password" "$docker_registry"
+fi
+
+docker buildx build --platform linux/amd64 -t "$TASK_IMAGE" src/main
+docker push "$TASK_IMAGE"
+
+# Check the exit status of the docker push command
+push_status=$?
+if [[ $push_status -ne 0 ]]; then
+  echo "ERROR: Failed to push Docker image."
+  exit $push_status
+fi
 stop_timer "Docker build and push"
 
+#####
 # run workflow
+#####
 start_timer
 python "./src/$filename"
-echo Wait for workflow to complete...
+echo "Wait for workflow to complete..."
 argo wait @latest -n playground
 stop_timer "Workflow execution"
 
