@@ -41,7 +41,7 @@ jobs:
       id-token: write
 
     outputs:
-      digest: ${{ steps.build-and-push.outputs.digest }}
+      version: ${{ steps.meta.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -114,9 +114,11 @@ jobs:
 
       - name: execute py script
         run: |
-          export TASK_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7}
+          export TASK_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
           cd src
           python render_workflows.py
+        env:
+          $VERSION: ${{needs.build.outputs.version}}
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Bump version
