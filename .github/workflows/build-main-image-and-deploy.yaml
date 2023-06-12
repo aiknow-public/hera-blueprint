@@ -118,7 +118,7 @@ jobs:
           cd src
           python render_workflows.py
         env:
-          $VERSION: ${{needs.build.outputs.version}}
+          VERSION: ${{needs.build.outputs.version}}
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Bump version
