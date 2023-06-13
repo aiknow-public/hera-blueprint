@@ -10,9 +10,11 @@ display_help() {
   echo "The following options are only needed if not working with codespaces but e.g. from local laptop:"
   echo "  -p, --pr PR_NUMBER             Specify the pull request number"
   echo "  -u, --user GITHUB_USER         Specify the GitHub username (required to query for PRs)"
-  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository (including org if github registry is used)"
+  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository"
   echo "  -dr, --docker-registry DOCKER_REGISTRY"
   echo "                                 Specify the Docker registry"
+  echo "  -do, --docker-organization DOCKER_ORGANIZATION"
+  echo "                                 Specify the Docker organization (optionally)"
   echo "  -du, --docker-user DOCKER_USER Specify the Docker username"
   echo "  -dp, --docker-password DOCKER_PASSWORD"
   echo "                                 Specify the Docker user password"
@@ -81,6 +83,10 @@ while [[ $# -gt 0 ]]; do
       docker_registry="$2"
       shift 2
       ;;
+    -do|--docker-organization)
+      docker_organization="$2"
+      shift 2
+      ;;
     -du|--docker-user)
       docker_user="$2"
       shift 2
@@ -129,10 +135,24 @@ if [ -z "$docker_registry" ]; then
   fi
 fi
 
-# Set the 'repository' variable if not provided
+# Set the 'docker_organization' and 'repository' variables if not provided
+if [ -z "$docker_organization" ]; then
+  if [ -n "$GITHUB_REPOSITORY" ]; then
+    IFS="/" read -ra parts <<< "$GITHUB_REPOSITORY"
+    docker_organization=${parts[0]}
+    repository=${parts[1]}
+  else
+    echo "GitHub repository not provided."
+    exit 1
+  fi
+fi
+
+
+# Set the 'docker_organization' and 'repository' variables if not provided
 if [ -z "$repository" ]; then
   if [ -n "$GITHUB_REPOSITORY" ]; then
-    repository=$GITHUB_REPOSITORY
+    IFS="/" read -ra parts <<< "$GITHUB_REPOSITORY"
+    repository=${parts[1]}
   else
     echo "GitHub repository not provided."
     exit 1
@@ -153,7 +173,7 @@ if [ "$measurement_enabled" = true ]; then
   echo "Measurement enabled."
 fi
 
-export TASK_IMAGE="$docker_registry/$repository:pr-$pr"
+export TASK_IMAGE="$docker_registry/$docker_organization/$repository:pr-$pr"
 
 # Function to start the execution timer
 start_timer() {
