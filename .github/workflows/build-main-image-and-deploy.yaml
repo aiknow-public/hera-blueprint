@@ -21,10 +21,11 @@ on:
     branches: [ "main" ]
 
 env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}
+  DOCKER_ORGANIZATION: ${{ secrets.DOCKER_ORGANIZATION ||  github.repository_owner }}
+  DOCKER_IMAGE: ${{ github.repository_name }}
+  DOCKER_USER: ${{ secrets.DOCKER_USER || github.actor }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD || secrets.GITHUB_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,7 +40,6 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
-
     outputs:
       version: ${{ steps.meta.outputs.version }}
     steps:
@@ -52,13 +52,13 @@ jobs:
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Log into registry ${{ env.DOCKER_REGISTRY }}
         if: github.event_name != 'pull_request'
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -66,7 +66,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_IMAGE }}
           flavor: |
             latest=auto
           tags: |
@@ -116,7 +116,7 @@ jobs:
 
       - name: execute py script
         run: |
-          export TASK_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
+          export TASK_IMAGE=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_IMAGE }}:$VERSION
           cd src
           python render_workflows.py
         env:
