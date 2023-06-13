@@ -137,7 +137,9 @@ fi
 
 # Set the 'docker_organization' and 'repository' variables if not provided
 if [ -z "$docker_organization" ]; then
-  if [ -n "$GITHUB_REPOSITORY" ]; then
+  if [ -n "$DOCKER_ORGANIZATION" ]; then
+    docker_organization=$DOCKER_ORGANIZATION
+  elif [ -n "$GITHUB_REPOSITORY" ]; then
     IFS="/" read -ra parts <<< "$GITHUB_REPOSITORY"
     docker_organization=${parts[0]}
     repository=${parts[1]}
@@ -146,7 +148,6 @@ if [ -z "$docker_organization" ]; then
     exit 1
   fi
 fi
-
 
 # Set the 'docker_organization' and 'repository' variables if not provided
 if [ -z "$repository" ]; then
