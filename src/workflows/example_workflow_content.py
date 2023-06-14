@@ -2,7 +2,7 @@ import os
 from hera.workflows import DAG, script
 from hera.workflows.models import ImagePullPolicy
 
-name = "Example"
+name = "hera-example"
 image = os.getenv("TASK_IMAGE")
 
 @script(
