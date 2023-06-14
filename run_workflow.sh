@@ -4,20 +4,9 @@
 display_help() {
   echo "Usage: ./script.sh [OPTIONS] FILENAME"
   echo "Options:"
+  echo "  -f, --filename FILENAME        Specify the filename of the Python workflow file"
   echo "  -m, --measure                  Enable measurement"
   echo "  -h, --help                     Display this help message"
-  echo ""
-  echo "The following options are only needed if not working with codespaces but e.g. from local laptop:"
-  echo "  -p, --pr PR_NUMBER             Specify the pull request number"
-  echo "  -u, --user GITHUB_USER         Specify the GitHub username (required to query for PRs)"
-  echo "  -r, --repository GITHUB_REPO   Specify the GitHub repository"
-  echo "  -dr, --docker-registry DOCKER_REGISTRY"
-  echo "                                 Specify the Docker registry"
-  echo "  -do, --docker-organization DOCKER_ORGANIZATION"
-  echo "                                 Specify the Docker organization (optionally)"
-  echo "  -du, --docker-user DOCKER_USER Specify the Docker username"
-  echo "  -dp, --docker-password DOCKER_PASSWORD"
-  echo "                                 Specify the Docker user password"
 }
 
 # Function to check if a command-line tool is installed
@@ -40,141 +29,13 @@ get_pull_request() {
   check_tool_installed "jq"
 
   # Set the 'user' variable if not provided
-  if [ -z "$user" ]; then
-    if [ -n "$GITHUB_USER" ]; then
-      user=$GITHUB_USER
-    else
-      echo "GitHub username not provided."
-      exit 1
-    fi
+  if [ -z "$GITHUB_USER" ]; then
+    echo "ERROR: GitHub username is not provided. Please set the GITHUB_USER environmental variable."
+    exit 1
   fi
 
-  pr=$(gh pr list --base "main" --author "$user" --json number --state all --limit 1 | jq -r '.[].number')
+  pr=$(gh pr list --base "main" --author "$GITHUB_USER" --json number --state all --limit 1 | jq -r '.[].number')
 }
-
-# Check if the required tools are installed
-check_tool_installed "argo"
-
-# Set default values
-pr=""
-measurement_enabled=false
-user=""
-repository=""
-docker_registry=""
-docker_user=""
-docker_user_password=""
-
-# Parse command-line arguments
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    -p|--pr)
-      pr="$2"
-      shift 2
-      ;;
-    -u|--user)
-      user="$2"
-      shift 2
-      ;;
-    -r|--repository)
-      repository="$2"
-      shift 2
-      ;;
-    -dr|--docker-registry)
-      docker_registry="$2"
-      shift 2
-      ;;
-    -do|--docker-organization)
-      docker_organization="$2"
-      shift 2
-      ;;
-    -du|--docker-user)
-      docker_user="$2"
-      shift 2
-      ;;
-    -dp|--docker-password)
-      docker_user_password="$2"
-      shift 2
-      ;;
-    -m|--measure)
-      measurement_enabled=true
-      shift
-      ;;
-    -h|--help)
-      display_help
-      exit 0
-      ;;
-    *)
-      filename=$1
-      shift
-      ;;
-  esac
-done
-
-# Check if the Python script parameter is provided
-if [ -z "$filename" ]; then
-  echo "Please provide the filename of the Python workflow file."
-  exit 1
-fi
-
-# Check if the Python script exists
-check_python_script "$filename"
-
-# Check if ARGO_SERVER environment variable is set
-if [[ -z "$ARGO_SERVER" ]]; then
-  echo "ERROR: ARGO_SERVER environment variable is not set."
-  exit 1
-fi
-
-# Set the 'docker_registry' variable if not provided
-if [ -z "$docker_registry" ]; then
-  if [ -n "$DOCKER_REGISTRY" ]; then
-    docker_registry=$DOCKER_REGISTRY
-  else
-    echo "Docker registry not provided."
-    exit 1
-  fi
-fi
-
-# Set the 'docker_organization' and 'repository' variables if not provided
-if [ -z "$docker_organization" ]; then
-  if [ -n "$DOCKER_ORGANIZATION" ]; then
-    docker_organization=$DOCKER_ORGANIZATION
-  elif [ -n "$GITHUB_REPOSITORY" ]; then
-    IFS="/" read -ra parts <<< "$GITHUB_REPOSITORY"
-    docker_organization=${parts[0]}
-    repository=${parts[1]}
-  else
-    echo "GitHub repository not provided."
-    exit 1
-  fi
-fi
-
-# Set the 'docker_organization' and 'repository' variables if not provided
-if [ -z "$repository" ]; then
-  if [ -n "$GITHUB_REPOSITORY" ]; then
-    IFS="/" read -ra parts <<< "$GITHUB_REPOSITORY"
-    repository=${parts[1]}
-  else
-    echo "GitHub repository not provided."
-    exit 1
-  fi
-fi
-
-# Check if PR parameter is provided, otherwise try to get existing pull request
-if [ -z "$pr" ]; then
-  get_pull_request
-  if [ -z "$pr" ]; then
-    echo "Please open a pull request first."
-    exit 1
-  fi
-fi
-
-# Run the Python script
-if [ "$measurement_enabled" = true ]; then
-  echo "Measurement enabled."
-fi
-
-export TASK_IMAGE="$docker_registry/$docker_organization/$repository:pr-$pr"
 
 # Function to start the execution timer
 start_timer() {
@@ -185,39 +46,125 @@ start_timer() {
 stop_timer() {
   timer_end=$(date +%s.%N)
   execution_time=$(echo "$timer_end - $timer_start" | bc)
-  if [ "$measurement_enabled" = true ]; then
+  if [ "$MEASURE" = true ]; then
     echo "$1, $execution_time" >> execution_times.csv
     echo "Execution time for $1: $execution_time seconds. Result appended to execution_times.csv."
   fi
 }
 
+#####
+# check command line parameters and env vars
+#####
+
+# Check if the required tools are installed
+check_tool_installed "argo"
+
+# Check if the Argo server can be reached
+if ! argo list >/dev/null 2>&1; then
+  echo "ERROR: Unable to reach the Argo server. Make sure Argo is running and properly configured."
+  exit 1
+fi
+
+# Set default values
+MEASURE=false
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -f|--filename)
+      FILENAME="$2"
+      shift 2
+      ;;
+    -m|--measure)
+      MEASURE=true
+      shift
+      ;;
+    -h|--help)
+      display_help
+      exit
+      ;;
+    *)
+      echo "Unknown option: $1"
+      display_help
+      exit 1
+      ;;
+  esac
+done
+
+# Load environment variables from .env file
+if [[ -f .env ]]; then
+  source .env
+fi
+
+# Check if the FILENAME parameter is provided
+if [ -z "$FILENAME" ]; then
+  echo "ERROR: Please provide the filename of the Python workflow file using the -f/--filename option."
+  exit 1
+fi
+
+# Check if the Python script exists
+check_python_script "$FILENAME"
+
+# Check if the GITHUB_USER environmental variable is set
+if [ -z "$GITHUB_USER" ]; then
+  echo "ERROR: GitHub username is not provided. Please set the GITHUB_USER environmental variable."
+  exit 1
+fi
+
+# Check if the PR_NUMBER environmental variable is set, otherwise try to get existing pull request
+if [ -z "$PR_NUMBER" ]; then
+  get_pull_request
+  if [ -z "$pr" ]; then
+    echo "ERROR: Please open a pull request first or set the PR_NUMBER environmental variable."
+    exit 1
+  fi
+fi
+
+# Check if the DOCKER_REGISTRY environmental variable is set
+if [ -z "$DOCKER_REGISTRY" ]; then
+  echo "ERROR: Docker registry is not provided. Set the DOCKER_REGISTRY environmental variable."
+  exit 1
+fi
+
+# Check if the DOCKER_USER environmental variable is set
+if [ -z "$DOCKER_USER" ]; then
+  echo "ERROR: Docker username is not provided. Set the DOCKER_USER environmental variable."
+  exit 1
+fi
+
+# Check if the DOCKER_PASSWORD environmental variable is set
+if [ -z "$DOCKER_PASSWORD" ]; then
+  echo "ERROR: Docker user password is not provided. Set the DOCKER_PASSWORD environmental variable."
+  exit 1
+fi
+
+# Check if the DOCKER_ORGANIZATION environmental variable is set
+if [ -z "$DOCKER_ORGANIZATION" ]; then
+  echo "ERROR: Docker organization is not provided. Set the DOCKER_ORGANIZATION environmental variable."
+  exit 1
+fi
+
+# Check if the GITHUB_REPOSITORY environmental variable is set
+if [ -z "$GITHUB_REPOSITORY" ]; then
+  echo "ERROR: GitHub repository is not provided. Set the GITHUB_REPOSITORY environmental variable."
+  exit 1
+fi
+
+# Run the Python script
+if [ "$MEASURE" = true ]; then
+  echo "Measurement enabled."
+fi
+
 ######
 # build and push image
 ######
+
 start_timer
+export TASK_IMAGE="$DOCKER_REGISTRY/$DOCKER_ORGANIZATION/$GITHUB_REPOSITORY:pr-$pr"
+
 # Check if the user is already logged in to the Docker registry
-if ! docker info --format '{{.RegistryConfig.IndexConfigs}}' | grep -q "$docker_registry"; then
-  # Set the 'docker_user' variable if not provided
-  if [ -z "$docker_user" ]; then
-    if [ -n "$DOCKER_USER" ]; then
-      docker_user=$DOCKER_USER
-    else
-      echo "Docker username not provided."
-      exit 1
-    fi
-  fi
-
-  # Set the 'docker_user_password' variable if not provided
-  if [ -z "$docker_user_password" ]; then
-    if [ -n "$DOCKER_PASSWORD" ]; then
-      docker_user_password=$DOCKER_PASSWORD
-    else
-      echo "Docker user password not provided."
-      exit 1
-    fi
-  fi
-
-  docker login --username="$docker_user" --password="$docker_user_password" "$docker_registry"
+if ! docker info --format '{{.RegistryConfig.IndexConfigs}}' | grep -q "$DOCKER_REGISTRY"; then
+  docker login --username="$DOCKER_USER" --password="$DOCKER_PASSWORD" "$DOCKER_REGISTRY"
 fi
 
 docker buildx build --platform linux/amd64 -t "$TASK_IMAGE" src/main
@@ -234,8 +181,9 @@ stop_timer "Docker build and push"
 #####
 # run workflow
 #####
+
 start_timer
-python "./src/$filename"
+python "./src/$FILENAME"
 echo "Wait for workflow to complete..."
 argo wait @latest -n playground
 stop_timer "Workflow execution"
