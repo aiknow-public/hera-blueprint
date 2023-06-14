@@ -164,9 +164,9 @@ if [ -z "$DOCKER_ORGANIZATION" ]; then
   exit 1
 fi
 
-# Check if the GITHUB_REPOSITORY environmental variable is set
-if [ -z "$GITHUB_REPOSITORY" ]; then
-  echo "ERROR: GitHub repository is not provided. Set the GITHUB_REPOSITORY environmental variable."
+# Check if the RepositoryName environmental variable is set
+if [ -z "$RepositoryName" ]; then
+  echo "ERROR: GitHub repository is not provided. Set the RepositoryName environmental variable."
   exit 1
 fi
 
@@ -180,7 +180,7 @@ fi
 ######
 
 start_timer
-export TASK_IMAGE="$DOCKER_REGISTRY/$DOCKER_ORGANIZATION/$GITHUB_REPOSITORY:$imagetag"
+export TASK_IMAGE="$DOCKER_REGISTRY/$DOCKER_ORGANIZATION/$RepositoryName:$imagetag"
 
 # Check if the user is already logged in to the Docker registry
 if ! docker info --format '{{.RegistryConfig.IndexConfigs}}' | grep -q "$DOCKER_REGISTRY"; then
