@@ -1,2 +1,8 @@
 def do_something():
-    print("bar24,99")
+
+    # loop through a random list of animals
+    for animal in random_animals():
+        print(animal)
+
+def random_animals():
+    return ["dog", "cat", "mouse", "bird"]
