@@ -42,4 +42,4 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 
 - [run_workflow.sh](./run_workflow.sh)  
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
-Make sure to set the required environment variables, `--help` for more info.
+Make sure to set the required environment variables, e.g. via a `.env` file. Use --help for more info.
