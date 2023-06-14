@@ -6,6 +6,7 @@ display_help() {
   echo "Options:"
   echo "  -f, --filename FILENAME        Specify the filename of the Python workflow file"
   echo "  -m, --measure                  Enable measurement"
+  echo "  --no-pr                        Not recommended. Set this if you do not want to work with Pull Requests"
   echo "  -h, --help                     Display this help message"
 }
 
@@ -38,6 +39,11 @@ get_pull_request() {
   # Filter the pull requests by the base branch ("main"), author, and limit to 1 result
   # Extract the pull request number using jq
   pr=$(gh pr list --base "main" --head "$(git rev-parse --abbrev-ref HEAD)" --author "$GITHUB_USER" --json number --state all --limit 1 | jq -r '.[].number')
+  if [ -z "$pr" ]; then
+    echo "pull request based on the currently checked out branch could not be found."
+  else
+    imagetag="pr-$pr"
+  fi
 }
 
 # Function to start the execution timer
@@ -82,6 +88,10 @@ while [[ $# -gt 0 ]]; do
       MEASURE=true
       shift
       ;;
+    --no-pr)
+      NOPR=true
+      shift
+      ;;
     -h|--help)
       display_help
       exit
@@ -114,13 +124,16 @@ if [ -z "$GITHUB_USER" ]; then
   exit 1
 fi
 
-# Check if the PR_NUMBER environmental variable is set, otherwise try to get existing pull request
-if [ -z "$PR_NUMBER" ]; then
+# Check if the flag --no-pr was used, otherwise try to get existing pull request
+if [ -z "$NOPR" ]; then
   get_pull_request
-  if [ -z "$pr" ]; then
-    echo "ERROR: Please open a pull request on the current branch first or set the PR_NUMBER environmental variable."
+  if [ -z "$imagetag" ]; then
+    echo "ERROR: Please open a pull request on the current branch first or use the flag --no-pr"
     exit 1
   fi
+else
+  timestamp=$(date +%s)
+  imagetag="ephemeral-$(whoami)"
 fi
 
 # Check if the DOCKER_REGISTRY environmental variable is set
@@ -163,7 +176,7 @@ fi
 ######
 
 start_timer
-export TASK_IMAGE="$DOCKER_REGISTRY/$DOCKER_ORGANIZATION/$GITHUB_REPOSITORY:pr-$pr"
+export TASK_IMAGE="$DOCKER_REGISTRY/$DOCKER_ORGANIZATION/$GITHUB_REPOSITORY:$imagetag"
 
 # Check if the user is already logged in to the Docker registry
 if ! docker info --format '{{.RegistryConfig.IndexConfigs}}' | grep -q "$DOCKER_REGISTRY"; then
