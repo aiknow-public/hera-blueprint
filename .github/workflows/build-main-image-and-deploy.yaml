@@ -23,7 +23,7 @@ on:
 env:
   DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}
   DOCKER_ORGANIZATION: ${{ secrets.DOCKER_ORGANIZATION ||  github.repository_owner }}
-  DOCKER_IMAGE: ${{ github.repository_name || 'foo' }}
+  DOCKER_IMAGE: ${{ github.event.repository.name }}
   DOCKER_USER: ${{ secrets.DOCKER_USER || github.actor }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD || secrets.GITHUB_TOKEN }}
 
