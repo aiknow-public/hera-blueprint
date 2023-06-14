@@ -132,7 +132,6 @@ if [ -z "$NOPR" ]; then
     exit 1
   fi
 else
-  timestamp=$(date +%s)
   # Check if $GITHUB_USER is set, otherwise use the current user name
   if [ -n "$GITHUB_USER" ]; then
     imagetag="ephemeral-$GITHUB_USER"
