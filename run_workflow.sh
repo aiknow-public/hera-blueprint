@@ -133,7 +133,12 @@ if [ -z "$NOPR" ]; then
   fi
 else
   timestamp=$(date +%s)
-  imagetag="ephemeral-$(whoami)"
+  # Check if $GITHUB_USER is set, otherwise use the current user name
+  if [ -n "$GITHUB_USER" ]; then
+    imagetag="ephemeral-$GITHUB_USER"
+  else
+    imagetag="ephemeral-$(whoami)"
+  fi
 fi
 
 # Check if the DOCKER_REGISTRY environmental variable is set
