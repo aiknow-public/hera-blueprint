@@ -34,7 +34,10 @@ get_pull_request() {
     exit 1
   fi
 
-  pr=$(gh pr list --base "main" --author "$GITHUB_USER" --json number --state all --limit 1 | jq -r '.[].number')
+  # Retrieve the pull request number based on the currently checked out branch
+  # Filter the pull requests by the base branch ("main"), author, and limit to 1 result
+  # Extract the pull request number using jq
+  pr=$(gh pr list --base "main" --head "$(git rev-parse --abbrev-ref HEAD)" --author "$GITHUB_USER" --json number --state all --limit 1 | jq -r '.[].number')
 }
 
 # Function to start the execution timer
@@ -115,7 +118,7 @@ fi
 if [ -z "$PR_NUMBER" ]; then
   get_pull_request
   if [ -z "$pr" ]; then
-    echo "ERROR: Please open a pull request first or set the PR_NUMBER environmental variable."
+    echo "ERROR: Please open a pull request on the current branch first or set the PR_NUMBER environmental variable."
     exit 1
   fi
 fi
