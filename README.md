@@ -12,7 +12,7 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 1) Create a branch, do some change in the python code an create a PR
 1) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
 1) Paste them into the terminal in your codespace
-1) Run `./run_workflow.sh example_workflow.py`  
+1) Run `./run_workflow.sh -f example_workflow.py`  
 --> An ephemeral docker image will be created and a workflow will be started using it. The output of the workflow with be written to the terminal.
 
 ### Prerequisites
@@ -42,4 +42,4 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 
 - [run_workflow.sh](./run_workflow.sh)  
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
-Make sure to set the required environment variables, `--help` for more info.
+Make sure to set the required environment variables, e.g. via a `.env` file. Use --help for more info.
