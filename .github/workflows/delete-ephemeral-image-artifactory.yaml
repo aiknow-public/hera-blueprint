@@ -1,0 +1,19 @@
+name: Delete Docker Images nightly on artifactory
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:  # Enable manual triggering 
+
+jobs:
+  nightly-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check DOCKER_REGISTRY secret
+        run: |
+          if [[ "${{ secrets.DOCKER_REGISTRY }}" == *"artifactory"* ]]; then
+            echo "hello"
+          else
+            echo "Skipping workflow as DOCKER_REGISTRY does not contain 'artifactory'."
+            exit 0
+          fi
