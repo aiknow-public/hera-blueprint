@@ -1,0 +1,42 @@
+name: Create / Update Pull Request for QA deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'kubernetes/**'
+
+jobs:
+  update_qa_pull_request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find Pull Request
+        id: find_pr
+        uses: peter-evans/find-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
+      - name: Update Pull Request
+        if: steps.find_pr.outputs.pull_request_number != ''
+        uses: peter-evans/update-pull-request@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull_request_number: ${{ steps.find_pr.outputs.pull_request_number }}
+          title: Merge main into qa
+          body: Automated pull request update
+
+      - name: Create Pull Request
+        if: steps.find_pr.outputs.pull_request_number == ''
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          base: qa
+          title: Merge main into qa
+          body: Automated pull request creation
