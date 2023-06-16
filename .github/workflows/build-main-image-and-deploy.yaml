@@ -137,6 +137,6 @@ jobs:
         run: |
           git fetch origin
           git checkout qa
-          git merge dev --no-edit
+          git merge main --no-edit
           git push origin qa
 
