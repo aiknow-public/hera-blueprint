@@ -2,6 +2,7 @@ name: Create / Update Pull Request for QA deployment
 
 # Only trigger, when the build workflow succeeded
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Build and Deploy to Dev"]
     types:
