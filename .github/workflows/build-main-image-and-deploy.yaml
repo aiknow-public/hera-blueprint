@@ -121,24 +121,3 @@ jobs:
         name: Bump version
         with:
           commit_message: Auto-deploy to dev (via gitops)
-
-  deploy-to-qa:
-    if: github.event_name != 'pull_request'
-    needs: deploy-to-dev
-    environment: qa
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repo content
-        uses: actions/checkout@v3
-        with:
-          ref: main
-
-      - name: copy yamls to qa
-        run: |
-          cp kubernetes/dev/*.yaml kubernetes/qa
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        name: Bump version
-        with:
-          commit_message: Auto-deploy to qa (via gitops)

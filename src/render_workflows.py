@@ -13,5 +13,5 @@ wt_list.append(w1)
 
 # render all WorkflowTemplates and create yaml files in the gitops folder
 for wt in wt_list:
-    with open('../kubernetes/dev/'+wt.name+'Template.yaml', 'w') as f:
+    with open('../kubernetes/base/'+wt.name+'Template.yaml', 'w') as f:
         f.write(wt.to_yaml())
