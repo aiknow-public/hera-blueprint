@@ -8,19 +8,61 @@ on:
       - completed
 
 jobs:
-  update_qa_pull_request:
+  create_or_update_pull_request:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create Pull Request
-        if: steps.find_pr.outputs.pull_request_number == ''
-        uses: peter-evans/create-pull-request@v5
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          base: qa
-          title: Merge main into qa
-          body: Automated pull request creation
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Find Pull Request
+        id: find_pr
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pullRequests } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: context.repo.owner + ':' + context.ref,
+              base: 'qa'
+            });
+            const prNumber = pullRequests.length ? pullRequests[0].number : null;
+            console.log(prNumber);
+
+      - name: Create or Update Pull Request
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = 'Merge main into qa';
+            const body = 'Automated pull request creation';
+            const base = 'qa';
+            const head = context.repo.owner + ':' + context.ref;
+
+            if (${ { steps.find_pr.outputs.prNumber } }) {
+              await github.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: ${ { steps.find_pr.outputs.prNumber } },
+                title: title,
+                body: body
+              });
+            } else {
+              await github.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                base: base,
+                head: head
+              });
+            }
