@@ -32,7 +32,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "Merge main into qa"
-          branch: "qa"
-          base: "main"
+          branch: "main"
+          base: "qa"
           delete-branch: false
           body: "Update qa branch with changes from main."
