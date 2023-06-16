@@ -8,37 +8,32 @@ on:
       - completed
 
 jobs:
-  create_or_update_pull_request:
+  createPullRequest:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install reviewdog
-        run: |
-          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b $(go env GOPATH)/bin
+      - name: Fetch all branches
+        run: git fetch --no-tags --prune --depth=5 origin +refs/heads/*:refs/remotes/origin/*
 
-      - name: Find Pull Request
-        id: find_pr
+      - name: Configure Git user
         run: |
-          pr_number=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository }}:${{ github.ref }}&base=qa" | \
-            jq -r '.[0].number')
-          echo "::set-output name=pr_number::$pr_number"
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
 
-      - name: Create or Update Pull Request
+      - name: Merge main into qa
         run: |
-          pr_number=${{ steps.find_pr.outputs.pr_number }}
-          if [ -n "$pr_number" ]; then
-            echo "Updating existing Pull Request #$pr_number"
-            reviewdog -f=diff -name="pullrequest" -reporter="github-pr-review" \
-              -filter-mode="added" -tee -level=info \
-              -diff="git diff --name-only --diff-filter=ACMRTUXB ${{ github.event.before }}...${{ github.sha }}" \
-              -fail-on-error="$pr_number"
-          else
-            echo "Creating new Pull Request"
-            reviewdog -f=diff -name="pullrequest" -reporter="github-pr-check" \
-              -filter-mode="added" -tee -level=info \
-              -diff="git diff --name-only --diff-filter=ACMRTUXB ${{ github.event.before }}...${{ github.sha }}"
-          fi
+          git checkout qa
+          git merge main
+
+      - name: Create or Update PR
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Merge main into qa"
+          branch: "qa"
+          base: "main"
+          delete-branch: false
+          body: "Update qa branch with changes from main."
