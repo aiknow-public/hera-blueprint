@@ -15,7 +15,7 @@ spec:
     script:
       command:
       - python
-      image: artifactory.boschdevcloud.com/gs-pj-top98-ai-know/hera-blueprint:sha-40cb990
+      image: artifactory.boschdevcloud.com/gs-pj-top98-ai-know/hera-blueprint:sha-3c4fe64
       imagePullPolicy: Always
       source: 'import os
 
