@@ -12,27 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Setup Git
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-
-      - name: Checkout and update 'qa' branch
-        run: |
-          git checkout -B qa
-          git pull origin main --no-edit
-
-      - name: Create or Update PR
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Merge main into qa"
-          branch: "main"
-          base: "qa"
-          delete-branch: false
-          body: "Update qa branch with changes from main."
+  steps:
+    - name: create pull request
+      run: gh pr create -B qa -H main --title 'Deploy to QA' --body 'Created by Github action'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
