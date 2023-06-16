@@ -1,11 +1,11 @@
 name: Create / Update Pull Request for QA deployment
 
+# Only trigger, when the build workflow succeeded
 on:
-  push:
-    branches:
-      - main
-#    paths:
-#      - 'kubernetes/**'
+  workflow_run:
+    workflows: ["Build and Deploy to Dev"]
+    types:
+      - completed
 
 jobs:
   update_qa_pull_request:
