@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'kubernetes/**'
+#    paths:
+#      - 'kubernetes/**'
 
 jobs:
   update_qa_pull_request:
