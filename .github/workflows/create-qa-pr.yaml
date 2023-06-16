@@ -12,22 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Fetch all branches
-        run: git fetch --no-tags --prune --depth=5 origin +refs/heads/*:refs/remotes/origin/*
-
-      - name: Configure Git user
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-      - name: Merge main into qa
-        run: |
-          git checkout qa
-          git merge main
-
       - name: Create or Update PR
         uses: peter-evans/create-pull-request@v3
         with:
