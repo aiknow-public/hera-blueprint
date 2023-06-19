@@ -43,9 +43,13 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
 Make sure to set the required environment variables, e.g. via a `.env` file. Use --help for more info.
 
-## Deployment pipeline / workflow
+## Deployment
 
-### Overview
+### Prerequisites
+For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for
+changes in the [kubernetes](kubernetes) folder and on related branches (`main` branch for deployment to Dev and `qa` branch for deployment to QA).
+
+### Pipeline / Workflow
 
 ```mermaid
 flowchart TB
@@ -56,15 +60,11 @@ flowchart TB
     D2-->E[GitOps **QA Deployment** triggered...]
 ```
 
-### Prerequisites
-For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for
-changes in the [kubernetes](kubernetes) folder and on related branches (`main` branch for deployment to Dev and `qa` branch for deployment to QA). 
-
-### Dev Deployment
+#### Dev Deployment
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
 builds a docker image and patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the Dev environment.
 
-### QA Deployment
+#### QA Deployment
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)' last step automatically
 merges the changes on main to qa branch.
 Via GitOps, the WorkflowTemplate(s) is/are deployed to the QA environment.
