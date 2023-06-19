@@ -4,7 +4,7 @@
 Blueprint for a Hera project incl. gitops support. 
 You can [use this repo as template](https://github.com/aiknow-public/hera-blueprint/generate) for your hera project.
 
-## Getting started
+## Development
 
 ### TL;DR
 1) Create a repository using this repo here as a template
@@ -19,9 +19,7 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 - To be able to push a docker image with the [run_workflow.sh](./run_workflow.sh) script, access to
 this repository's github container registry is required ("package write").
 To allow this, set the environmental variables `DOCKER_REGISTRY`,`DOCKER_ORGANIZATION`, `DOCKER_USER` and `DOCKER_PASSWORD` (ideally via Codespaces secret)
-- For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for
-changes in the [kubernetes](kubernetes) folder and on related branches (`main` branch for deployment to Dev and `qa` branch for deployment to QA).
-As well, the k8s cluster(s) should have read access to this repository's container registry. 
+- As well, the k8s cluster(s) should have read access to the container registry.
 
 ## Folder structure
 - [kubernetes](kubernetes)  
@@ -58,11 +56,15 @@ flowchart TB
     D2-->E[GitOps **QA Deployment** triggered...]
 ```
 
-### Dev
-The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
-builds a docker image and patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the dev environment.
+### Prerequisites
+For the gitops deployment, the gitops server (flux / argo) needs to poll this repository for
+changes in the [kubernetes](kubernetes) folder and on related branches (`main` branch for deployment to Dev and `qa` branch for deployment to QA). 
 
-### QA
+### Dev Deployment
+The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
+builds a docker image and patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the Dev environment.
+
+### QA Deployment
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)' last step automatically
 merges the changes on main to qa branch.
-Via GitOps, the WorkflowTemplate(s) is/are deployed to the qa environment.
+Via GitOps, the WorkflowTemplate(s) is/are deployed to the QA environment.
