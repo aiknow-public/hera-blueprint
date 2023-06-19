@@ -46,6 +46,19 @@ Make sure to set the required environment variables, e.g. via a `.env` file. Use
 
 ## Release / Deployment process
 
+### Overview
+
+'''mermaid
+graph LR
+A[Dev] --> B[Docker Image]
+B --> C[GitOps Workflow Template]
+C --> D[QA]
+D --> E[GitOps Deployment]
+E --> F[Prod]
+A --> C
+C --> D
+'''
+
 ### Dev
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
 builds a docker image patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the dev environment.
