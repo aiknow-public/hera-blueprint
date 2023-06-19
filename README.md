@@ -44,19 +44,17 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
 Make sure to set the required environment variables, e.g. via a `.env` file. Use --help for more info.
 
-## Release / Deployment process
+## Deployment pipeline / workflow
 
 ### Overview
 
 ```mermaid
-graph LR
-A[Dev] --> B[Docker Image]
-B --> C[GitOps Workflow Template]
-C --> D[QA]
-D --> E[GitOps Deployment]
-E --> F[Prod]
-A --> C
-C --> D
+flowchart TB
+    A[Start]-- Push to main -->B[Build Docker Image]
+    B-->C[ Patch Workflow-Templates in kubernetes folder on `main`]
+    C-->D1[GitOps **Dev Deployment** triggered...]
+    C-- Manually approval -->D2[Merge `main` to `qa`]
+    D2-->E[GitOps **QA Deployment** triggered...]
 ```
 
 ### Dev
