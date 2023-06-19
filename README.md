@@ -19,7 +19,7 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 - To be able to push a docker image with the [run_workflow.sh](./run_workflow.sh) script, access to
 this repository's github container registry is required ("package write").
 To allow this, set the environmental variables `DOCKER_REGISTRY`,`DOCKER_ORGANIZATION`, `DOCKER_USER` and `DOCKER_PASSWORD` (ideally via Codespaces secret)
-- As well, the k8s cluster(s) should have read access to the container registry.
+- As well, the k8s cluster(s) should have read access to used the container registry.
 
 ## Folder structure
 - [kubernetes](kubernetes)  
