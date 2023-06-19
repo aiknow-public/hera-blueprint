@@ -46,5 +46,6 @@ Make sure to set the required environment variables, e.g. via a `.env` file. Use
 
 ## Release process
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
-the *dev environment* by patching the related yaml file in [kubernetes](kubernetes).  
-Deploying to *qa environment* is done optionally via a manually approving the last step in the build pipeline (which merges `main` in `qa` branch).
+the **dev environment** by patching the related yaml file in [kubernetes](kubernetes).  
+
+Deploying to **qa environment** is done optionally via a manually approving the last step in the build pipeline (which merges `main` in `qa` branch).
