@@ -67,4 +67,4 @@ builds a docker image and patches the yaml files in [kubernetes](kubernetes). Ac
 #### QA Deployment
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)' last step automatically
 merges the changes on main to qa branch.
-Accordingly, via GitOps, the WorkflowTemplate(s) is/are deployed to the QA environment.
+Accordingly, via GitOps, the WorkflowTemplates are deployed to the QA environment.
