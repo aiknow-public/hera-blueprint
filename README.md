@@ -44,8 +44,13 @@ Used to render the WorkflowTemplate(s) as yaml, in order to deploy them via gito
 Script to run a workflow for debugging, it can be started locally or via codespaces. 
 Make sure to set the required environment variables, e.g. via a `.env` file. Use --help for more info.
 
-## Release process
-The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
-the **dev environment** by patching the related yaml file in [kubernetes](kubernetes).  
+## Release / Deployment process
 
-Deploying to **qa environment** is done manually by approving the last step in the build pipeline (which then merges `main` in `qa` branch).
+### Dev
+The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
+builds a docker image patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the dev environment.
+
+### QA
+The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)' last step automatically
+merges the changes on main to qa branch.
+Via GitOps, the WorkflowTemplate(s) is/are deployed to the dev environment.
