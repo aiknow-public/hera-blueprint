@@ -48,7 +48,7 @@ Make sure to set the required environment variables, e.g. via a `.env` file. Use
 
 ### Overview
 
-'''mermaid
+```mermaid
 graph LR
 A[Dev] --> B[Docker Image]
 B --> C[GitOps Workflow Template]
@@ -57,7 +57,7 @@ D --> E[GitOps Deployment]
 E --> F[Prod]
 A --> C
 C --> D
-'''
+```
 
 ### Dev
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
