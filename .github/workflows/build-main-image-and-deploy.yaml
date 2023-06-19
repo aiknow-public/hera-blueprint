@@ -132,7 +132,7 @@ jobs:
       - name: checkout repo content
         uses: actions/checkout@v3
         with:
-          ref: main
+          ref: qa
       - name: Merge dev branch to qa
         run: |
           git fetch origin
