@@ -59,7 +59,7 @@ flowchart TB
 
 ### Dev
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml) automatically deploys to
-builds a docker image patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the dev environment.
+builds a docker image and patches the yaml fil(s) in [kubernetes](kubernetes). Via GitOps, the WorkflowTemplate(s) is/are deployed to the dev environment.
 
 ### QA
 The [build pipeline](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)' last step automatically
