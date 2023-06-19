@@ -136,5 +136,5 @@ jobs:
       - name: Merge dev branch to qa
         run: |
           git fetch origin
-          git merge main --no-edit
+          git merge origin/main --no-edit
           git push
