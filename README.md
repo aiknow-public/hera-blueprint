@@ -4,6 +4,12 @@
 Blueprint for a Hera project incl. gitops support. 
 You can [use this repo as template](https://github.com/aiknow-public/hera-blueprint/generate) for your hera project.
 
+## How to use the template repository 
+1) Create a repo referencing this repo here as a template
+1) Protect the QA environment 
+1) Create a qa branch from main.
+1) Delete this chapter here from your README.md
+
 ## Development
 
 ### TL;DR
