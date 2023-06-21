@@ -5,4 +5,4 @@ def do_something():
         print(animal)
 
 def random_animals():
-    return ["doggggggggy", "cat", "mouse", "bird"]
+    return ["doggggy", "cat", "mouse", "bird"]
