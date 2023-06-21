@@ -22,7 +22,7 @@ Basically you just run [run_workflow.sh](./run_workflow.sh) in your codespace, w
 1) (optionally, recommended) Create a branch, do some change in the python code an create a PR
 1) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
 1) Paste them into the terminal in your codespace
-1) Run `./run_workflow.sh -f example_workflow.py`  
+1) Run `./run_workflow.sh -f example_workflow.py --no-pr`  
 --> An ephemeral docker image will be created and a workflow will be started using it. The output of the workflow with be written to the terminal.
 
 ### Prerequisites
