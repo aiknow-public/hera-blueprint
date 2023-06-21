@@ -11,9 +11,15 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 1) Fix your README.md: Adjust the repo in the banner above and delete the chapter "How to use the template repository ".
 
 ## Development
+In order to allow easy and agile development of your worflows, the best way to do so, is using codespaces.
+The DevContainer used by codespaces for this repository is preconfigured, allowing to start developemnt without much configuration of an IDE.  
+
+Basically you just run [run_workflow.sh](./run_workflow.sh), which does the following:
+First, it generates an ephemaral docker container based on your code (incl. python dependencies) and pushes this to the container registry.
+Afterwards it starts a Workflow which references the new container.
+Finally it outputs the logs of your Workflow steps to the termninal.
 
 ### TL;DR
-1) Create a repository using this repo here as a template
 1) Open it in GitHub Codespaces
 1) Create a branch, do some change in the python code an create a PR
 1) Copy the environmental variables from the argo server (--> User menu, Button "COPY TO CLIPBOARD")
@@ -24,7 +30,7 @@ You can [use this repo as template](https://github.com/aiknow-public/hera-bluepr
 ### Prerequisites
 - To be able to push a docker image with the [run_workflow.sh](./run_workflow.sh) script, access to
 this repository's github container registry is required ("package write").
-To allow this, set the environmental variables `DOCKER_REGISTRY`,`DOCKER_ORGANIZATION`, `DOCKER_USER` and `DOCKER_PASSWORD` (ideally via Codespaces secret)
+To allow this, set the environmental variables `DOCKER_REGISTRY`,`DOCKER_ORGANIZATION`, `DOCKER_USER` and `DOCKER_PASSWORD` (e.g. via oranization wide Codespaces secrets)
 - As well, the k8s cluster(s) should have read access to used the container registry.
 
 ## Folder structure
