@@ -1,5 +1,5 @@
 # Hera Blueprint 
-[![build main image and deploy to dev](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml/badge.svg)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)
+[![Build and Deploy to Dev](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml/badge.svg?branch=main)](https://github.com/aiknow-public/hera-blueprint/actions/workflows/build-main-image-and-deploy.yaml)
 
 Blueprint for a Hera project incl. gitops support. 
 You can [use this repo as template](https://github.com/aiknow-public/hera-blueprint/generate) for your hera project.
