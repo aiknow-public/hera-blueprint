@@ -15,9 +15,9 @@ In order to allow easy and agile development of your worflows, the best way to d
 The DevContainer used by codespaces for this repository is preconfigured, allowing to start developemnt without much configuration of an IDE.  
 
 Basically you just run [run_workflow.sh](./run_workflow.sh), which does the following:
-First, it generates an ephemaral docker container based on your code (incl. python dependencies) and pushes this to the container registry.
-Afterwards it starts a Workflow which references the new container.
-Finally it outputs the logs of your Workflow steps to the termninal.
+- First, it generates an ephemaral docker container based on your code (incl. python dependencies) and pushes this to the container registry.
+- Afterwards it starts a Workflow which references the new container.
+- Finally it outputs the logs of your Workflow steps to the termninal.
 
 ### TL;DR
 1) Open it in GitHub Codespaces
