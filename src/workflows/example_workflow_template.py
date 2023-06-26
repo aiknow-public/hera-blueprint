@@ -1,8 +1,8 @@
 import os
-from hera.workflows import DAG, script
+from hera.workflows import DAG, WorkflowTemplate, script
 from hera.workflows.models import ImagePullPolicy
 
-name = "hera-example"
+name = "hera-example-animals"
 image = os.getenv("TASK_IMAGE")
 
 @script(
@@ -21,13 +21,13 @@ def foo():
     print(art_1)
 
 
-def workflow_content():
-    """Returns the content of the desired workflow.
-
-    Out of this a WorkflowTemplate will be created for the deployment or a Workflow for debugging.
-
-    :rtype: object
-    """
-    with DAG(name="d") as s:
-        f = foo()
-
+def getWorkflowTemplate():
+    with WorkflowTemplate(
+        name=name,
+        namespace="playground",
+        entrypoint="d",
+        service_account_name="argo-workflow"
+    ) as w:
+        with DAG(name="d"):
+            foo()
+    return w

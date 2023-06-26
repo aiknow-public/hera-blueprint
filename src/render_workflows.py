@@ -1,12 +1,7 @@
-from workflows import example_workflow_content
-from hera.workflows import WorkflowTemplate
+from workflows import example_workflow_template
 
 wt_list = []
-
-# instantiate example WorkflowTemplate
-with WorkflowTemplate(name=example_workflow_content.name, entrypoint="d", service_account_name="argo-workflow") as w1:
-    example_workflow_content.workflow_content()
-wt_list.append(w1)
+wt_list.append(example_workflow_template.getWorkflowTemplate())
 
 # add further WorkflowTemplates
 # ...

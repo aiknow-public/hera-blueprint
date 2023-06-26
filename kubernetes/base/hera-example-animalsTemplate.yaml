@@ -1,7 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: hera-example
+  name: hera-example-animals
+  namespace: playground
 spec:
   entrypoint: d
   serviceAccountName: argo-workflow
