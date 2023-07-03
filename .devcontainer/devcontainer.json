@@ -13,5 +13,5 @@
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip3 install -r src/main/requirements.txt"
+	"postCreateCommand": "pip3 install -r src/main/requirements.txt && docker buildx create --name mybuilder --driver docker-container --bootstrap"
 }

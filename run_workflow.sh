@@ -187,8 +187,8 @@ if ! docker info --format '{{.RegistryConfig.IndexConfigs}}' | grep -q "$DOCKER_
   docker login --username="$DOCKER_USER" --password="$DOCKER_PASSWORD" "$DOCKER_REGISTRY"
 fi
 
-docker buildx build --platform linux/amd64 -t "$TASK_IMAGE" src/main
-docker push "$TASK_IMAGE"
+docker buildx use mybuilder # created in devcontainer.json, needed for multi-arch build
+docker buildx build --push --platform linux/amd64,linux/arm64 -t "$TASK_IMAGE" src/main
 
 # Check the exit status of the docker push command
 push_status=$?
