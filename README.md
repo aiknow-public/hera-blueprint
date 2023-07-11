@@ -18,7 +18,7 @@ Basically you just run [run_workflow.sh](./run_workflow.sh) in your codespace, w
 - Finally it outputs the logs of your Workflow steps to the termninal.
 
 ### TL;DR
-1) Configure DOCKER_USER and DOCKER_PASSWORD as Codespaces secrets (see https://github.com/<org>/<repo>/settings/secrets/codespaces).  
+1) Configure DOCKER_USER and DOCKER_PASSWORD as Codespaces secrets (see https://github.com/ORG/REPO/settings/secrets/codespaces).  
 DOCKER_USER should be your github user and DOCKER_PASSWORD should be a PAT with PACKAGE WRITE access.
 1) Open it in GitHub Codespaces
 1) (optionally, recommended) Create a branch, do some change in the python code an create a PR
