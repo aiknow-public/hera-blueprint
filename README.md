@@ -19,7 +19,7 @@ Basically you just run [run_workflow.sh](./run_workflow.sh) in your codespace, w
 
 ### TL;DR
 1) Configure DOCKER_USER and DOCKER_PASSWORD as Codespaces secrets (at https://github.com/ORG/REPO/settings/secrets/codespaces).  
-DOCKER_USER should be your github user and DOCKER_PASSWORD should be a PAT with PACKAGE WRITE access.  
+DOCKER_USER should be your github user and DOCKER_PASSWORD should be a PAT with PACKAGE WRITE access (make sure to configure SSO to the organization for the PAT!)
 --> After you haved pushed your first docker image, make also sure to configure the created image regristry. Grant access to AI-Know team and to the actions of this repo. 
 1) Open it in GitHub Codespaces
 1) (optionally, recommended) Create a branch, do some change in the python code an create a PR
